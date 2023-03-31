@@ -101,6 +101,9 @@
                                     MathScene.add(object)
                                     let direction = new THREE.Vector3();
                                     let position = new THREE.Vector3(element.from[0], element.from[1], element.from[2]);
+                                    position.x += i/16
+                                    position.y += j/16
+                                    position.z += k/16
                                     let rotation = new THREE.Vector3(element.rotation[0], element.rotation[1], element.rotation[2])
                                     object.position.copy(position);
                                     object.rotation.copy(rotation)
