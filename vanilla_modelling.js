@@ -92,40 +92,39 @@
                     let file = "";
                     let MathScene = new THREE.Scene()
                     cubes.forEach(element => {
-                        console.log(element);
-                        for (let i = 0; i < Math.floor(element.size(0)); i++) {
-                            for (let j = 0; j < Math.floor(element.size(1)); j++) {
-                                for (let k = 0; k < Math.floor(element.size(2)); k++) {
-                                    let object = new THREE.Object3D()
-                                    MathScene.add(object)
-                                    let direction = new THREE.Vector3();
-                                    let position = new THREE.Vector3(element.from[0], element.from[1], element.from[2]);
-                                    position.x += i
-                                    position.y += j
-                                    position.z += k
-                                    let rotation = new THREE.Vector3(element.rotation[0], element.rotation[1], element.rotation[2])
-                                    object.position.copy(position);
-                                    object.rotation.copy(rotation)
-                                    object.getWorldDirection(direction);
-                                    direction.normalize()
-                                    let ray = new THREE.Ray(position, direction);
-                                    let rayhit = new THREE.Vector3();
-                                    ray.at(0.5, rayhit);
-                                    console.log(direction);
-                                    console.log(rayhit);
-                                    file = file + `summon block_display ~ ~ ~ {block_state:{Name:'minecraft:quartz_block'},Tags:['new']}\ndata merge entity @e[type=block_display,tag=new,limit=1] {transformation:{translation:[${rayhit.x/16}f,${rayhit.y/16}f,${rayhit.z/16}f],scale:[0.0625f,0.0625f,0.0f]},start_interpolation:-1}\ntag @e[tag=new] remove new\n`;
-                                    direction.negate()
-                                    ray = new THREE.Ray(position, direction);
-                                    ray.at(0.5, rayhit);
-                                    file = file + `summon block_display ~ ~ ~ {block_state:{Name:'minecraft:quartz_block'},Tags:['new']}\ndata merge entity @e[type=block_display,tag=new,limit=1] {transformation:{translation:[${rayhit.x/16}f,${rayhit.y/16}f,${rayhit.z/16}f],scale:[0.0625f,0.0625f,0.0f]},start_interpolation:-1}\ntag @e[tag=new] remove new\n`;
-                                    //file = file + `summon block_display ~ ~ ~ {block_state:{Name:'minecraft:quartz_block'},Tags:['new']}\ndata merge entity @e[type=block_display,tag=new,limit=1] {transformation:{translation:[${rayhit.x/16}f,${rayhit.y/16}f,${rayhit.z/16}f],scale:[0.0f,0.0625f,0.0625f]},start_interpolation:-1}\ntag @e[tag=new] remove new\n`;
-                                    //file = file + `summon block_display ~ ~ ~ {block_state:{Name:'minecraft:quartz_block'},Tags:['new']}\ndata merge entity @e[type=block_display,tag=new,limit=1] {transformation:{translation:[${rayhit.x/16}f,${rayhit.y/16}f,${rayhit.z/16}f],scale:[0.0f,0.0625f,0.0625f]},start_interpolation:-1}\ntag @e[tag=new] remove new\n`;
-                                    //file = file + `summon block_display ~ ~ ~ {block_state:{Name:'minecraft:quartz_block'},Tags:['new']}\ndata merge entity @e[type=block_display,tag=new,limit=1] {transformation:{translation:[${rayhit.x/16}f,${rayhit.y/16}f,${rayhit.z/16}f],scale:[0.0625f,0.0f,0.0625f]},start_interpolation:-1}\ntag @e[tag=new] remove new\n`;
-                                    //file = file + `summon block_display ~ ~ ~ {block_state:{Name:'minecraft:quartz_block'},Tags:['new']}\ndata merge entity @e[type=block_display,tag=new,limit=1] {transformation:{translation:[${rayhit.x/16}f,${rayhit.y/16}f,${rayhit.z/16}f],scale:[0.0625f,0.0f,0.0625f]},start_interpolation:-1}\ntag @e[tag=new] remove new\n`;
-                                }
-                            }
-                        }
-                    });
+			let object = new THREE.Object3D();
+                        MathScene.add(object);
+                    	let direction = new THREE.Vector3();
+                        let position = new THREE.Vector3(((element.size(0)/2)+element.from[0], (element.size(1)/2)+element.from[1], (element.size(2)/2)+element.from[2]);
+			let rotation = new THREE.Vector3(element.rotation[0], element.rotation[1], element.rotation[2]);
+			object.position.copy(position);
+                        object.rotation.copy(rotation);
+			for (let i = 0; i < 6; i++) {
+				switch (Math.floor(i/2)) {
+					case 0:
+						break;
+					case 1:
+						rotation = new THREE.Vector3(element.rotation[0], element.rotation[1] - 90, element.rotation[2]);
+                        			object.rotation.copy(rotation);
+						break;
+					case 2:
+						rotation = new THREE.Vector3(element.rotation[0], element.rotation[1], element.rotation[2] + 90);
+                        			object.rotation.copy(rotation);
+						break;
+				}
+                        	object.getWorldDirection(direction);
+                        	direction.normalize()
+				if (i % 2) {
+					direction.negate()
+				}
+                        	let ray = new THREE.Ray(position, direction);
+                        	let rayhit = new THREE.Vector3();
+                        	ray.at(element.size(Math.floor(i/2))/2, rayhit);
+                        	console.log(direction);
+                        	console.log(rayhit);
+                        	file = file + `summon block_display ~ ~ ~ {block_state:{Name:'minecraft:quartz_block'},Tags:['new']}\ndata merge entity @e[type=block_display,tag=new,limit=1] {transformation:{translation:[${rayhit.x/16}f,${rayhit.y/16}f,${rayhit.z/16}f],scale:[0.0625f,0.0625f,0.0f]},start_interpolation:-1}\ntag @e[tag=new] remove new\n`;
+                    	}
+		    });
                     let project_folder = zip.folder(Project.name)
                     let functions_folder = project_folder.folder("data")
                         .folder("model." + Project.name)
